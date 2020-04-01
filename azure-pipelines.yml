@@ -15,7 +15,7 @@ steps:
 - task: CMake@1
   inputs:
     workingDirectory: 'build'
-    cmakeArgs: 
+    cmakeArgs: ..
 
-- script: 'cat ./build/Makefile; make -f ./build/Makefile all'
+- script: 'make -f ./build/Makefile all'
   displayName: 'Run a multi-line script'
