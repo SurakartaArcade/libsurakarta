@@ -17,5 +17,5 @@ steps:
     workingDirectory: 'build'
     cmakeArgs: ..
 
-- script: 'make -f ./build/Makefile all'
+- script: 'cd ./build; make all;'
   displayName: 'Run a multi-line script'
