@@ -21,12 +21,22 @@
  * @author Shukant Pal <shukantpal@outlook.com>
  */
 
-#ifndef INCLUDE_SURAKARTA_HPP_
-#define INCLUDE_SURAKARTA_HPP_
+#ifndef INCLUDE_SKTYPES_H_
+#define INCLUDE_SKTYPES_H_
 
-class Surakarta
+#include <stdint.h>
+namespace sk
 {
-  Surakarta(bool noInit = false);
-};
+/**
+ * For each type of piece, the first 36 bits of a bitboard define whether that
+ * type of piece is present on a square represented by those bits.
+ */
+typedef uint64_t Bitboard;
 
-#endif /* INCLUDE_SURAKARTA_HPP_ */
+typedef uint64_t Move;
+
+typedef unsigned int Square;
+
+} // namespace sk
+
+#endif /* INCLUDE_SKTYPES_H_ */

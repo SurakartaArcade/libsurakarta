@@ -1,5 +1,5 @@
 /**
- * Surakarta.cpp
+ * Surakarta.hpp
  *
  * Copyright (C) 2020 Shukant Pal <shukantpal@outlook.com>
  *
@@ -21,8 +21,30 @@
  * @author Shukant Pal <shukantpal@outlook.com>
  */
 
-#include <Surakarta.hpp>
+#ifndef INCLUDE_SKPOSITION_H_
+#define INCLUDE_SKPOSITION_H_
 
-Surakarta::Surakarta(bool init)
+#include "enginetypes.h"
+#include "../../include/skmodel.h"
+
+namespace sk
 {
-}
+
+class Position
+{
+public:
+  Position();
+  Position(Position &clone);
+
+  sk::Move *movesFrom(sk::Square);
+  sk::Move *movesTo(sk::Square);
+
+protected:
+  sk::Bitboard player_bitboards_;
+  int count_red_;
+  int count_black_;
+}; // namespace sk
+
+} // namespace sk
+
+#endif /* INCLUDE_SKPOSITION_H_ */
