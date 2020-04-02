@@ -23,6 +23,7 @@
 
 #include <skmodel.h>
 #include <cstdlib>
+#include <iostream>
 
 sk::Surakarta::Surakarta()
 {
@@ -73,6 +74,11 @@ bool sk::Surakarta::isLegalStep(int start_row, int start_column, int final_row, 
 
 bool sk::Surakarta::isLegalAttackBid(Bid start_bid, int start_row, int start_column, Move *out, int cut_row, int cut_column)
 {
+  if (this->getPlayer(start_row, start_column) != this->getTurnPlayer())
+  {
+    return false; // not player's turn
+  }
+
   int row = start_row;
   int column = start_column;
   Bid bid = start_bid;
@@ -117,6 +123,11 @@ bool sk::Surakarta::isLegalAttackBid(Bid start_bid, int start_row, int start_col
     }
     if (occupant && occupant != turn_player)
     {
+      if (loop_count == 0)
+      {
+        return false; // must loop once to capture
+      }
+
       break;
     }
   }

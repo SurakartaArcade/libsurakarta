@@ -33,7 +33,7 @@ namespace sk
 
 enum Player : int
 {
-  NULL = 0,
+  NULL_PLAYER = 0,
   RED = 1,
   BLACK = 2
 };
@@ -89,6 +89,11 @@ public:
   Surakarta nextMoveAttack(Bid, int start_row, int start_column, Move * = 0);
 
   Surakarta &clone();
+
+  inline Player *editable()
+  {
+    return this->board;
+  }
 
   inline Move getAttack(Bid bid, int start_row, int start_column)
   {

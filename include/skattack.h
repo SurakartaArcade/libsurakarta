@@ -38,11 +38,11 @@ inline int calculateLoopRadius(int terminal_row, int terminal_column)
 {
   if (terminal_row == 0 || terminal_row == 5)
   {
-    return terminal_row < 3 ? terminal_row : 5 - terminal_row;
+    return terminal_row < 3 ? terminal_column : 5 - terminal_column;
   }
   else
   {
-    return terminal_column < 3 ? terminal_column : 5 - terminal_column;
+    return terminal_column < 3 ? terminal_row : 5 - terminal_row;
   }
 }
 
@@ -125,7 +125,8 @@ inline void calculateLoopTerminal(int in_row, int in_column, int &out_row, int &
  * @param [out] is_loop
  */
 inline void calculateAttackPath(int in_row, int in_column, Bid in_bid,
-                                int &out_row, int &out_column, Bid &out_bid, bool &is_loop)
+                                int &out_row, int &out_column, Bid &out_bid,
+                                bool &is_loop)
 {
   out_bid = in_bid; // if no looping occurs
   is_loop = false;
@@ -133,7 +134,7 @@ inline void calculateAttackPath(int in_row, int in_column, Bid in_bid,
   switch (in_bid)
   {
   case NORTH:
-    if (in_row - 1 >= 0)
+    if (in_row - 1 > 0)
     {
       out_row = in_row - 1;
       out_column = in_column;
@@ -141,7 +142,7 @@ inline void calculateAttackPath(int in_row, int in_column, Bid in_bid,
     }
     break;
   case WEST:
-    if (in_column - 1 >= 0)
+    if (in_column - 1 > 0)
     {
       out_row = in_row;
       out_column = in_column - 1;
@@ -149,7 +150,7 @@ inline void calculateAttackPath(int in_row, int in_column, Bid in_bid,
     }
     break;
   case SOUTH:
-    if (in_row + 1 < 6)
+    if (in_row + 1 < 5)
     {
       out_row = in_row + 1;
       out_column = in_column;

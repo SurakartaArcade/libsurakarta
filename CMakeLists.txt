@@ -9,6 +9,8 @@ include(CTest)
 
 enable_testing()
 
+set (CMAKE_CXX_STANDARD 11)
+
 add_library(libsurakarta 
     SHARED 
     src/model/surakarta.cc)
@@ -38,13 +40,18 @@ install(FILES ${CMAKE_BINARY_DIR}/mylib.pc
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
 
 if (BUILD_TESTING)
-    add_executable(attackpath_exec test/attackpath.cc)
+    add_executable(test_skmodel test/skmodel.cc test/factory/surakarta_factory.cc)
 
     target_include_directories(
-        attackpath_exec
+        test_skmodel
         PUBLIC
         include
     )
 
-    add_test(attackpath attackpath_exec)
+    target_link_libraries(
+        test_skmodel
+        libsurakarta
+    )
+
+    add_test(SurakartaModel test_skmodel)
 endif()
