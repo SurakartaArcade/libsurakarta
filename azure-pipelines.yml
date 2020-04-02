@@ -17,8 +17,5 @@ steps:
     workingDirectory: 'build'
     cmakeArgs: ..
 
-- script: 'cd ./build; make all; cd ..'
-  displayName: 'Run a multi-line script'
-
-- script: "ctest -VV"
-  displayName: 'Run tests'
+- script: 'cd ./build; make all; cd ..; ctest -VV'
+  displayName: 'Run make and tests'
