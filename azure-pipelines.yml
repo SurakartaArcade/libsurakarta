@@ -17,5 +17,5 @@ steps:
     workingDirectory: 'build'
     cmakeArgs: ..
 
-- script: 'cd ./build; make all; cd ..; ctest -VV'
+- script: 'make all; ctest -VV'
   displayName: 'Run make and tests'
