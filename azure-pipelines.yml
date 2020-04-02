@@ -14,8 +14,8 @@ steps:
   displayName: 'Run a one-line script'
 - task: CMake@1
   inputs:
-    workingDirectory: 'build'
-    cmakeArgs: ..
+    workingDirectory: '.'
+    cmakeArgs: .
 
 - script: 'make all; ctest -VV'
   displayName: 'Run make and tests'
