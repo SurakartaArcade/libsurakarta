@@ -13,7 +13,8 @@ set (CMAKE_CXX_STANDARD 11)
 
 add_library(libsurakarta 
     SHARED 
-    src/model/surakarta.cc)
+    src/model/surakarta.cc
+    src/engine/position.cc)
 
 set_target_properties(libsurakarta 
     PROPERTIES

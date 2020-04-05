@@ -18,29 +18,20 @@
 
 // Author: Shukant Pal <shukantpal@outlook.com>
 
-#include <skmodel.h>
+#ifndef ENGINE_MOVEGEN_H_
+#define ENGINE_MOVEGEN_H_
 
-#include <cassert>
-#include <iostream>
+#include <position.h>
 
-#include "factory/surakarta_factory.h"
+#include <vector>
 
-void testAttackLegalityWhenBlocked() {
-    std::vector<ModelBlock *> mocker = {new ModelBlock(sk::RED, 0, 0, 3, 3),
-                                        new ModelBlock(sk::BLACK, 2, 0)};
-    sk::Surakarta *model = createModel(mocker);
+namespace sk {
 
-    // Piece is blocked, can't attack
-    assert(!model->isLegalAttack(sk::NORTH, 2, 2));
+// Generates all possible moves (of the given type) and pushes them into a
+// vector buffer.
+template <MoveType>
+std::vector<Move> &GenerateMoves(const Position &, std::vector<Move> *buffer);
 
-    // Piece can directly loop and capture
-    assert(model->isLegalAttack(sk::NORTH, 0, 2));
+}  // namespace sk
 
-    // Piece is black and can't play on this turn
-    assert(!model->isLegalAttack(sk::WEST, 2, 0));
-}
-
-int main() {
-    testAttackLegalityWhenBlocked();
-    return 0;
-}
+#endif /* ENGINE_MOVEGEN_H_ */

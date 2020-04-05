@@ -18,29 +18,21 @@
 
 // Author: Shukant Pal <shukantpal@outlook.com>
 
-#include <skmodel.h>
+#ifndef ENGINE_THREAD_H_
+#define ENGINE_THREAD_H_
 
-#include <cassert>
-#include <iostream>
+#include <thread.h>
 
-#include "factory/surakarta_factory.h"
+namespace sk {
 
-void testAttackLegalityWhenBlocked() {
-    std::vector<ModelBlock *> mocker = {new ModelBlock(sk::RED, 0, 0, 3, 3),
-                                        new ModelBlock(sk::BLACK, 2, 0)};
-    sk::Surakarta *model = createModel(mocker);
+typedef struct Context {
+    int depth;
+} Context;
 
-    // Piece is blocked, can't attack
-    assert(!model->isLegalAttack(sk::NORTH, 2, 2));
+class NegamaxThread {
+    NegamaxThread();
+};
 
-    // Piece can directly loop and capture
-    assert(model->isLegalAttack(sk::NORTH, 0, 2));
+}  // namespace sk
 
-    // Piece is black and can't play on this turn
-    assert(!model->isLegalAttack(sk::WEST, 2, 0));
-}
-
-int main() {
-    testAttackLegalityWhenBlocked();
-    return 0;
-}
+#endif /* ENGINE_THREAD_H_ */

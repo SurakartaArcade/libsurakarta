@@ -18,29 +18,21 @@
 
 // Author: Shukant Pal <shukantpal@outlook.com>
 
-#include <skmodel.h>
+#ifndef INCLUDE_SKMODELOPTIONS_H_
+#define INCLUDE_SKMODELOPTIONS_H_
 
-#include <cassert>
-#include <iostream>
+namespace sk {
 
-#include "factory/surakarta_factory.h"
+/// <code>ModelOptions</code> provides options to "tweak" the rules of
+/// Surakarta.
+struct ModelOptions {
+    /// Making a capture optional in an attack move allows the attacking piece
+    /// to stop anywhere after looping once.
+    bool capture_optional_;
 
-void testAttackLegalityWhenBlocked() {
-    std::vector<ModelBlock *> mocker = {new ModelBlock(sk::RED, 0, 0, 3, 3),
-                                        new ModelBlock(sk::BLACK, 2, 0)};
-    sk::Surakarta *model = createModel(mocker);
+    inline ModelOptions() : capture_optional_(false) {}
+};
 
-    // Piece is blocked, can't attack
-    assert(!model->isLegalAttack(sk::NORTH, 2, 2));
+}  // namespace sk
 
-    // Piece can directly loop and capture
-    assert(model->isLegalAttack(sk::NORTH, 0, 2));
-
-    // Piece is black and can't play on this turn
-    assert(!model->isLegalAttack(sk::WEST, 2, 0));
-}
-
-int main() {
-    testAttackLegalityWhenBlocked();
-    return 0;
-}
+#endif /* INCLUDE_SKMODELOPTIONS_H_ */
