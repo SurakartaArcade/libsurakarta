@@ -31,7 +31,9 @@ namespace sk {
 // whether a given type of piece is placed on the corresponding squares.
 typedef uint64_t Bitboard;
 
-typedef uint32_t Square;
+typedef int Square;
+
+inline Square CreateSquare(int row, int column) { return (row * 6 + column); }
 
 // Evaluation of a given position - +ve values indicate RED has the advantage,
 // while -ve values indicate BLACK has the advantage.

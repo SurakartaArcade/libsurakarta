@@ -69,19 +69,19 @@ Surakarta::Surakarta(Surakarta &copy) : options_(copy.options_) {
 }
 
 bool Surakarta::isLegal(Move mv) {
-    if (isMoveAttack(mv)) {
+    if (IsMoveAttack(mv)) {
         Move actual;
 
-        isLegalAttack(getMoveBid(mv), getMoveStartRow(mv),
-                      getMoveStartColumn(mv), &actual, getMoveFinalRow(mv),
-                      getMoveFinalColumn(mv));
+        isLegalAttack(GetMoveBid(mv), GetMoveStartRow(mv),
+                      GetMoveStartColumn(mv), &actual, GetMoveFinalRow(mv),
+                      GetMoveFinalColumn(mv));
 
         return (mv & ((1 << 24) - 1)) ==
                actual;  // move encoding bits are equal
     }
 
-    return isLegalStep(getMoveStartRow(mv), getMoveStartColumn(mv),
-                       getMoveFinalRow(mv), getMoveFinalColumn(mv));
+    return isLegalStep(GetMoveStartRow(mv), GetMoveStartColumn(mv),
+                       GetMoveFinalRow(mv), GetMoveFinalColumn(mv));
 }
 
 bool Surakarta::isLegalStep(int start_row, int start_column, int final_row,
@@ -145,7 +145,7 @@ bool Surakarta::isLegalAttack(Bid start_bid, int start_row, int start_column,
     }
 
     if (out) {
-        *out = createMove(start_row, start_column, cut_found ? cut_row : row,
+        *out = CreateMove(start_row, start_column, cut_found ? cut_row : row,
                           cut_found ? cut_column : column, true, start_bid);
     }
 
@@ -164,8 +164,8 @@ Surakarta *Surakarta::move(int start_row, int start_column, int final_row,
 }
 
 Surakarta *Surakarta::move(Move move) {
-    this->move(getMoveStartRow(move), getMoveStartColumn(move),
-               getMoveFinalRow(move), getMoveFinalColumn(move));
+    this->move(GetMoveStartRow(move), GetMoveStartColumn(move),
+               GetMoveFinalRow(move), GetMoveFinalColumn(move));
 
     return this;
 }

@@ -74,6 +74,9 @@ inline bool HasPlayer(const Bitboard &bitboard, int row, int column) {
     return (bitboard >> (row * 6 + column)) & 1;
 }
 
+inline void LiftPlayer(Bitboard &bitboard, int i) { bitboard &= ~(1 << i); }
+inline void PutPlayer(Bitboard &bitboard, int i) { bitboard |= (1 << i); }
+
 }  // namespace sk
 
 #endif /* INCLUDE_BITBOARD_H_ */

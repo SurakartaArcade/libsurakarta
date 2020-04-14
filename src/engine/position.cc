@@ -27,7 +27,7 @@
 
 namespace sk {
 
-Position::Position(sk::Surakarta &model) : options_(model.options_) {
+Position::Position(sk::Surakarta& model) : options_(model.options_) {
     player_bitboards_ = new sk::Bitboard[2];
 
     player_bitboards_[0] = sk::createPlayerBitboard(model, sk::RED);
@@ -37,6 +37,18 @@ Position::Position(sk::Surakarta &model) : options_(model.options_) {
     count_black_ = std::__popcount(this->player_bitboards_[1]);
 
     side_to_move_ = RED;
+}
+
+Position::Position(const Position& copy) : options_(copy.options_) {
+    player_bitboards_ = new sk::Bitboard[2];
+
+    player_bitboards_[0] = copy.player_bitboards_[0];
+    player_bitboards_[1] = copy.player_bitboards_[1];
+
+    count_red_ = copy.count_red_;
+    count_black_ = copy.count_black_;
+
+    side_to_move_ = copy.side_to_move_;
 }
 
 Value Position::evaluate() {
@@ -49,6 +61,43 @@ Value Position::evaluate() {
            ((player_bitboards_[1] >> 30) & 1)  //
            - ((player_bitboards_[0] >> 35) & 1) +
            ((player_bitboards_[1] >> 35) & 1);
+}
+
+void Position::copyFrom(Position& pos) {
+    player_bitboards_[0] = pos.player_bitboards_[0];
+    player_bitboards_[1] = pos.player_bitboards_[1];
+
+    count_red_ = pos.count_red_;
+    count_black_ = pos.count_black_;
+}
+
+void Position::move(Move move) {
+    Square start_sq =
+        CreateSquare(GetMoveStartRow(move), GetMoveStartColumn(move));
+    Square final_sq =
+        CreateSquare(GetMoveFinalRow(move), GetMoveFinalColumn(move));
+
+    if (HasPlayer(GetRedPlayerBitboard(), start_sq)) {
+        LiftPlayer(player_bitboards_[0], start_sq);
+        PutPlayer(player_bitboards_[0], final_sq);
+
+        if (HasPlayer(GetBlackPlayerBitboard(), final_sq)) {
+            --count_black_;
+            LiftPlayer(player_bitboards_[1], final_sq);
+        }
+
+        side_to_move_ = BLACK;
+    } else if (HasPlayer(GetBlackPlayerBitboard(), final_sq)) {
+        LiftPlayer(player_bitboards_[1], start_sq);
+        PutPlayer(player_bitboards_[1], final_sq);
+
+        if (HasPlayer(GetRedPlayerBitboard(), final_sq)) {
+            --count_red_;
+            LiftPlayer(player_bitboards_[0], start_sq);
+        }
+
+        side_to_move_ = RED;
+    }
 }
 
 }  // namespace sk

@@ -1,25 +1,21 @@
-/**
- * movegen.cc
- *
- * Copyright (C) 2020 Shukant Pal <shukantpal@outlook.com>
- *
- * This file is part of libsurakarta.
- *
- * libsurakarta is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * libsurakarta is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with libsurakarta.  If not, see <https://www.gnu.org/licenses/>.
- *
- * @author Shukant Pal <shukantpal@outlook.com>
- */
+// Copyright (C) 2020 Shukant Pal <shukantpal@outlook.com>
+//
+// This file is part of libsurakarta.
+//
+// libsurakarta is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// libsurakarta is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with libsurakarta.  If not, see <https://www.gnu.org/licenses/>.
+
+// Author: Shukant Pal <shukantpal@outlook.com>
 
 #include "movegen.h"
 
@@ -30,13 +26,13 @@ namespace sk {
 // Generates a method that will add a Move into a vector if the final
 // square is empty (given the initial square). The final square is calculated
 // by adding sq_delta (similar for final row & final column)
-#define GEN_STEP(name, sq_delta, row_delta, column_delta)                   \
-    inline void name(std::vector<Move>* bfr, const Bitboard& bb, Square sq, \
-                     int row, int column) {                                 \
-        if (HasPlayer(bb, sq + sq_delta)) {                                 \
-            bfr->push_back(createMove(row, column, row + row_delta,         \
-                                      column + column_delta));              \
-        }                                                                   \
+#define GEN_STEP(name, sq_delta, row_delta, column_delta)                  \
+    inline void name(std::vector<Move> bfr, const Bitboard& bb, Square sq, \
+                     int row, int column) {                                \
+        if (HasPlayer(bb, sq + sq_delta)) {                                \
+            bfr.push_back(CreateMove(row, column, row + row_delta,         \
+                                     column + column_delta));              \
+        }                                                                  \
     }
 GEN_STEP(StepNorthWest, -7, -1, -1)
 GEN_STEP(StepNorth, -6, -1, 0)
@@ -65,7 +61,7 @@ GEN_STEP(StepSouthEast, +7, +1, +1)
 
 inline void GenerateCornerStepMoves(const Bitboard stm_bitboard,
                                     const Bitboard nn_bitboard,
-                                    std::vector<Move>* buffer) {
+                                    std::vector<Move> buffer) {
     // Northwest corner
     if (HasPlayer(stm_bitboard, 0))
         TOUCH_CORNER(buffer, nn_bitboard, 0, 0, 0, StepEast, StepSouthEast,
@@ -89,7 +85,7 @@ inline void GenerateCornerStepMoves(const Bitboard stm_bitboard,
 
 inline void GenerateEdgeStepMoves(const Bitboard stm_bitboard,
                                   const Bitboard nn_bitboard,
-                                  std::vector<Move>* buffer) {
+                                  std::vector<Move> buffer) {
     for (int square = 1; square < 5; square++) {
         if (!HasPlayer(stm_bitboard, square)) continue;
 
@@ -125,12 +121,7 @@ inline void GenerateEdgeStepMoves(const Bitboard stm_bitboard,
 }
 
 template <>
-std::vector<Move>& GenerateMoves<STEP>(const Position& pos,
-                                       std::vector<Move>* buffer) {
-    if (!buffer) {
-        buffer = new std::vector<Move>();
-    }
-
+void GenerateMoves<STEP>(const Position& pos, std::vector<Move> buffer) {
     Bitboard stm_bitboard = pos.GetSideToMoveBitboard();
     Bitboard nn_bitboard = pos.GetNonNullBitboard();
 
@@ -152,8 +143,6 @@ std::vector<Move>& GenerateMoves<STEP>(const Position& pos,
             StepSouthEast(buffer, nn_bitboard, square, row, column);
         }
     }
-
-    return *buffer;
 }
 
 // Checks whether an attack from a square in a given direction is valid.
@@ -219,8 +208,8 @@ inline bool IsAttackValid(const Position& pos, Bid start_bid, int start_row,
 }
 
 // Generates attack moves with toggle for including "non-capturing" ones.
-std::vector<Move>& GenerateAttack(const Position& pos, bool gen_intermediate,
-                                  std::vector<Move>& buffer) {
+void GenerateAttack(const Position& pos, bool gen_intermediate,
+                    std::vector<Move> buffer) {
     int capture_row = 0;
     int capture_column = 0;
 
@@ -243,7 +232,7 @@ std::vector<Move>& GenerateAttack(const Position& pos, bool gen_intermediate,
                 }
 
                 if (!gen_intermediate || !pos.options_.capture_optional_) {
-                    buffer.push_back(createMove(row, column, capture_row,
+                    buffer.push_back(CreateMove(row, column, capture_row,
                                                 capture_column, true,
                                                 (Bid)start_bid));
                     continue;
@@ -267,54 +256,41 @@ std::vector<Move>& GenerateAttack(const Position& pos, bool gen_intermediate,
                         continue;  // can land only after looping once
                     }
 
-                    buffer.push_back(createMove(row, column, path_row,
+                    buffer.push_back(CreateMove(row, column, path_row,
                                                 path_column, true,
                                                 (Bid)start_bid));
                 }
             }
         }
     }
-
-    return buffer;
 }
 
 // Generates only those attacking moves that capture on an enemy piece.
 template <>
-std::vector<Move>& GenerateMoves<CAPTURE>(const Position& pos,
-                                          std::vector<Move>* buffer) {
-    if (!buffer) {
-        buffer = new std::vector<Move>();
-    }
-
-    GenerateAttack(pos, false, *buffer);
-    return *buffer;
+void GenerateMoves<CAPTURE>(const Position& pos, std::vector<Move> buffer) {
+    GenerateAttack(pos, false, buffer);
 }
 
 // Generates capturing & non-capturing attack moves. If model-options disallow
 // optional capturing, then only the former are included.
 template <>
-std::vector<Move>& GenerateMoves<ATTACK>(const Position& pos,
-                                         std::vector<Move>* buffer) {
-    if (!buffer) {
-        buffer = new std::vector<Move>();
-    }
-
-    GenerateAttack(pos, true, *buffer);
-    return *buffer;
+void GenerateMoves<ATTACK>(const Position& pos, std::vector<Move> buffer) {
+    GenerateAttack(pos, true, buffer);
 }
 
 // Generates all possible (legal) moves for the side-to-move.
 template <>
-std::vector<Move>& GenerateMoves<LEGAL>(const Position& pos,
-                                        std::vector<Move>* buffer) {
-    if (!buffer) {
-        buffer = new std::vector<Move>();
-    }
-
+void GenerateMoves<LEGAL>(const Position& pos, std::vector<Move> buffer) {
     GenerateMoves<ATTACK>(pos, buffer);
     GenerateMoves<STEP>(pos, buffer);
+}
 
-    return *buffer;
+std::vector<Move> GenerateMoves(const Position& pos) {
+    std::vector<Move> move_buffer;
+
+    GenerateMoves<LEGAL>(pos, move_buffer);
+
+    return move_buffer;
 }
 
 }  // namespace sk

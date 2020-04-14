@@ -60,24 +60,24 @@ typedef uint64_t Move;
  * @param is_attack
  * @param bid - initial direction of attack
  */
-inline Move createMove(int start_row, int start_column, int final_row,
+inline Move CreateMove(int start_row, int start_column, int final_row,
                        int final_column, bool is_attack = false,
                        sk::Bid bid = NULL_BID) {
     return (final_row) | (final_column << 6) | (start_row << 12) |
            (start_column << 18) | (is_attack << 19) | (bid << 20);
 }
 
-inline int getMoveStartRow(Move mv) { return mv & ((1 << 6) - 1); }
+inline int GetMoveStartRow(Move mv) { return mv & ((1 << 6) - 1); }
 
-inline int getMoveStartColumn(Move mv) { return (mv >> 6) & ((1 << 6) - 1); }
+inline int GetMoveStartColumn(Move mv) { return (mv >> 6) & ((1 << 6) - 1); }
 
-inline int getMoveFinalRow(Move mv) { return (mv >> 12) & ((1 << 6) - 1); }
+inline int GetMoveFinalRow(Move mv) { return (mv >> 12) & ((1 << 6) - 1); }
 
-inline int getMoveFinalColumn(Move mv) { return (mv >> 18) & ((1 << 6) - 1); }
+inline int GetMoveFinalColumn(Move mv) { return (mv >> 18) & ((1 << 6) - 1); }
 
-inline bool isMoveAttack(Move mv) { return (mv >> 19) & 1; }
+inline bool IsMoveAttack(Move mv) { return (mv >> 19) & 1; }
 
-inline Bid getMoveBid(Move mv) { return (Bid)((mv >> 20) & ((1 << 3) - 1)); }
+inline Bid GetMoveBid(Move mv) { return (Bid)((mv >> 20) & ((1 << 3) - 1)); }
 
 }  // namespace sk
 

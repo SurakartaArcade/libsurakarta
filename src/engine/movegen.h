@@ -30,7 +30,9 @@ namespace sk {
 // Generates all possible moves (of the given type) and pushes them into a
 // vector buffer.
 template <MoveType>
-std::vector<Move> &GenerateMoves(const Position &, std::vector<Move> *buffer);
+void GenerateMoves(const Position &, std::vector<Move> buffer);
+
+std::vector<Move> GenerateMoves(const Position &);
 
 }  // namespace sk
 

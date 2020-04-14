@@ -21,8 +21,8 @@
 // This file defines a bitboard-based modelling class. This is a "lighter
 // version" of Surakarta, and is used by the engine internally.
 
-#ifndef INCLUDE_SKPOSITION_H_
-#define INCLUDE_SKPOSITION_H_
+#ifndef ENGINE_POSITION_H_
+#define ENGINE_POSITION_H_
 
 #include "../../include/skmodel.h"
 #include "bitboard.h"
@@ -34,7 +34,7 @@ namespace sk {
 class Position {
    public:
     Position(Surakarta &surakarta);
-    Position(Position &clone);
+    Position(const Position &clone);
 
     // Heuristic to evaluate this position
     Value evaluate();
@@ -42,6 +42,9 @@ class Position {
     Bitboard getBitboard(Player player) {
         return player_bitboards_[player - 1];
     }
+
+    void copyFrom(Position &position);
+    void move(Move move);
 
     ModelOptions &options_;
 
@@ -102,4 +105,4 @@ inline bool IsPlayerAt(Bitboard bitboard, Square square) {
 
 }  // namespace sk
 
-#endif /* INCLUDE_SKPOSITION_H_ */
+#endif /* ENGINE_POSITION_H_ */
